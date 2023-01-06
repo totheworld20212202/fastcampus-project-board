@@ -1,5 +1,6 @@
 package com.fastcampus.projectboard.controller;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //@WebMvcTest // web mvc는 slice test. controller외에 bean들을 load하지 않는다. 따라서, datarest의 autoconfiguration을 읽지않았다.
+@Disabled("Spring Data REST 통합테스트는 불필요하므로 제외시킴")
 @DisplayName("Data REST - API 테스트")
 @SpringBootTest // 그래서 integration test를 사용해야함. webEnvironment는 mock을 써야함. 이 상태에서는 mockmvc존재알수없다.
 @AutoConfigureMockMvc   // 그래서 이걸 추가해주어야한다.
