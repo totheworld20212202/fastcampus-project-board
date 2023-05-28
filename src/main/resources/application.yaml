@@ -1,62 +1,62 @@
-server.servlet.encoding.force-response: true
+#server.servlet.encoding.force-response: true
 debug: false
-# true??? spring boot?? debug??? ?? ????
+# the amount of debugs are too huge
 management.endpoints.web.exposure.include: "*"
-# actuator?? ?? ? ????
-#한글
+# we see all functions using actuator
 logging:
   level:
-    com.fastcampus.projectboard: debug  #? ?? ????? ??? ??? debug level? ???.
-    org.springframework.web.servlet: debug  # debug:true? ????. debug:false?? ?? ?? ????? reqeust response debug? ?? ??
+    com.fastcampus.projectboard: debug
+    org.springframework.web.servlet: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
-    #jpa??? query log? debug? ???? ??. binding parameter? ?? ?? ????? ?? ???? ???. 
+# we are able to see query log if we use the BasicBinder
+
+# the below are data which intellij have in accessing to the db
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/board
-    username: hhk
-    password: 1234
+    username: wernerk
+    password: k#test@1324aabc
     driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:h2:mem:testdb
 #    username: sa
 #    driver-class-name: org.h2.Driver
-  #사용할때는 localhost:8080/h2-console로 들어가서
-  # Driver Class org.h2.Driver
-  # jdbc url : jdbc:h2:mem:testdb
-  # user name : sa
-  # password :
-  # 와 같이 입력해주어야 접속된다.  밑에 h2.console.enabled : false를 true로 해주어야 된다.
+
   jpa:
-    defer-datasource-initialization: true #test? database? ?????. resource? file? ???? data.sql? ?? (??? ?????)
-    hibernate.ddl-auto: create  # ddl ? ???? ?? domain ?? ??? table??????.
-    show-sql: true  #sql?? ???? query???? debug???? ????
-    properties: # jpa ???? hibernate ORM? ??. spring? highernate?? ????? ????? ?? ?? ?????? ???? ?? ??
-                # ???, ?????? ?? ??
-        hibernate.format_sql: true  #?????? ???? ????? ???
-        hibernate.default_batch_fetch_size: 100 # jpa?? ???? query? ??? bulk ? select???? ???
-#  h2.console.enabled: true #in-memory database? h2? ?????, h2 console??? web console????? ?? false? ? ??. ??? true
-#h2.console.enabled는 기본이 false 그래서 지웠다. 이걸 지우니까 localhost:8080/h2-console에서 접속이 안되더라. 그렇다고 h2 testdb가 사라지는 것은 아니다.
-  sql.init.mode: always # embedded? test???, always? ??, never? ????.
+    defer-datasource-initialization: true  # make it possible to create database for test
+    hibernate.ddl-auto: create # this helps to create tables just referring to the domains
+    show-sql: true # showing sql in debugs
+    properties:
+      hibernate.format_sql: true # this helps to see the debugs written in a line by several lines. we cannot use all the properties of  hibernate orm. This is the part to include specific features of highernate orm.
+      hibernate.default_batch_fetch_size: 100
+
+#  h2.console.enabled: true  #localhost:8080/h2-console작동여부
+#  h2.console.enabled: false # default는 false
+  sql.init.mode: always # 실제 db를 쓰더라도, data.sql이 반영되도록함.
   data.rest:
     base-path: /api
-    detection-strategy: annotated #기본값이 default로 되어있음.
+    detection-strategy: annotated
 
-#--- # .yaml??? ---? ???? ???? document? ?????.
 
-#spring: #??? spring profile document? ?? ??? ?? ---??. h2 database
-#    config.activate.on-profile: testdb  #test db? activate?? ?? ? ? ??? ???? ??
-# //@ActiveProfiles("testdb")를 jpaRepositoryTest.java에 상단에 붙여주어야 적용됨
-#    datasource:
-#      url: jdbc:h2:mem:board;mode=mysql
-#      driverClassName: org.h2.Driver
-#    sql.init.mode: always
-#    test.database.replace: none
+---
 
-#    datasource:
-#     url: jdbc:h2:mem:testdb
-#      driverClassName: org.h2.Driver
-#      username: sa
-#      password:
-#    sql.init.mode: always
-#    test.database.replace: none
+spring:
+  config:
+    activate:
+      on-profile: testdb
+  datasource:
+    url: jdbc:h2:mem:testdb;mode=mysql # board라는 이름은 중요하지 않음. mode가 mysql모드로 활성화
+    username: sa
+    password: 1234
+    driverClassName: org.h2.Driver
 
+  jpa:
+    defer-datasource-initialization: true  # make it possible to create database for test
+    hibernate.ddl-auto: create # this helps to create tables just referring to the domains
+    show-sql: true # showing sql in debugs
+    properties:
+      hibernate.format_sql: true # this helps to see the debugs written in a line by several lines. we cannot use all the properties of  hibernate orm. This is the part to include specific features of highernate orm.
+      hibernate.default_batch_fetch_size: 100
+  h2.console.enabled: true
+  sql.init.mode: always
+  test.database.replace: none #db를 h2가 임의로 띄우는것이 아닌 내가 정한 testdb라는 걸로 띄우도록 해줌.
 
