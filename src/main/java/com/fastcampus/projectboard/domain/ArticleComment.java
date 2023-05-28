@@ -1,52 +1,50 @@
 package com.fastcampus.projectboard.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
 @Table(indexes = {
-
         @Index(columnList = "content"),
         @Index(columnList = "createdAt"),
-        @Index(columnList = "createdBy")
-})
+        @Index(columnList = "createdBy"),
+}
+)
 //@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class ArticleComment extends AuditingFields{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Setter
-    @ManyToOne(optional = false)        // 이 항목은 false로 설정했을 때 해당 객체에 null이 들어갈 수 있습니다. 반대로 반드시 값이 필요하다면 true가 들어값니다. 기본값은 true입니다.
-    private Article article;            // 게시글 (ID)
+    @ManyToOne(optional = false)          // optional = false : 필수값, cascade값은 기본값이 none.
+    private Article article;
     @Setter
     @Column(nullable = false, length = 500)
-    private String content;             // 본문
-
+    private String content;
 
 //    @CreatedDate
 //    @Column(nullable = false)
-//    private LocalDateTime createdAt;    // 생성일시
+//    private LocalDateTime createdAt;
 //    @CreatedBy
-//    @Column(nullable = false, length=100)
-//    private String createdBy;           // 생성자
+//    @Column(nullable = false, length = 100)
+//    private String createdBy;
 //    @LastModifiedDate
 //    @Column(nullable = false)
-//    private LocalDateTime modifiedAt;   // 수정일시
+//    private LocalDateTime modifiedAt;
 //    @LastModifiedBy
-//    @Column(nullable = false, length=100)
-//    private String modifiedBy;          // 수정자
+//    @Column(nullable = false, length = 100)
+//    private String modifiedBy;
 
     protected ArticleComment() {}
 
@@ -54,6 +52,7 @@ public class ArticleComment extends AuditingFields{
         this.article = article;
         this.content = content;
     }
+
     public static ArticleComment of(Article article, String content) {
         return new ArticleComment(article,content);
     }
@@ -61,7 +60,7 @@ public class ArticleComment extends AuditingFields{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ArticleComment)) return false;
         ArticleComment that = (ArticleComment) o;
         return id != null && id.equals(that.id);
     }
@@ -70,4 +69,6 @@ public class ArticleComment extends AuditingFields{
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
 }

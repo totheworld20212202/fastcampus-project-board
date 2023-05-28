@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판 페이지</title>
+</head>
+
+<body>
+
+<!-- semantic tag -->
+<!--
+    th:replace 또는 th:insert를 쓰면 되고, 이전버전에서는 th:include였음.
+    root 밑에 header에서 header를 찾아가라든 뜻. (header는 파일, 뒤에
+    header는 #header처럼 header파일안에것)
+-->
+    <header th:replace="~{header :: header}"></header>
+    <main>
+        <form>
+            <label for="search-type" hidden>유형</label>
+            <select id="search-type" name="search-type">
+                <option>제목</option>
+                <option>본문</option>
+                <option>ID</option>
+                <option>닉네임</option>
+                <option>해시태그</option>
+            </select>
+            <label for="search-value" hidden>검색어</label>
+            <input id="search-value"type="search" placeholder="검색어..." name="search-value">
+            <button type="submit">검색</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>                            <!-- 한줄 -->
+                    <th>제목</th>                   <!-- 강조 -->
+                    <th>해시태그</th>                   <!-- 강조 -->
+                    <th>작성자</th>                   <!-- 강조 -->
+                    <th>작성일</th>                   <!-- 강조 -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>첫글</td>
+                    <td>#java</td>
+                    <td>Uno</td>
+                    <td>2022-01-01</td>
+                </tr>
+                <tr>
+                    <td>두번째글</td>
+                    <td>#spring</td>
+                    <td>Uno</td>
+                    <td>2022-01-02</td>
+                </tr>
+                <tr>
+                    <td>세번째글</td>
+                    <td>#java8</td>
+                    <td>Uno</td>
+                    <td>2022-01-03</td>
+                </tr>
+                <tr>
+                <td>네번째글</td>
+                <td>#java8</td>
+                <td>Uno</td>
+                <td>2022-01-03</td>
+                </tr>
+            </tbody>
+<!--            <tfoot>-->
+<!--            -->
+<!--            </tfoot>-->
+        </table>
+
+        <nav>
+            <table>
+                <tr>
+                    <td>previous</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>next</td>
+                </tr>
+            </table>
+
+        </nav>
+
+    </main>
+    <footer th:replace="footer :: footer"></footer>
+
+</body>
+</html>
+
