@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org">-->
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>게시판 페이지</title>
@@ -13,7 +14,9 @@
     root 밑에 header에서 header를 찾아가라든 뜻. (header는 파일, 뒤에
     header는 #header처럼 header파일안에것)
 -->
-    <header th:replace="~{header :: header}"></header>
+<!--    <header th:replace="~{header :: header}"></header>-->
+    <header id="header"></header>
+
     <main>
         <form>
             <label for="search-type" hidden>유형</label>
@@ -25,7 +28,7 @@
                 <option>해시태그</option>
             </select>
             <label for="search-value" hidden>검색어</label>
-            <input id="search-value"type="search" placeholder="검색어..." name="search-value">
+            <input id="search-value" type="search" placeholder="검색어..." name="search-value">
             <button type="submit">검색</button>
         </form>
 
@@ -84,7 +87,8 @@
         </nav>
 
     </main>
-    <footer th:replace="footer :: footer"></footer>
+<!--    <footer th:replace="footer :: footer"></footer>-->
+    <footer id="footer"></footer>
 
 </body>
 </html>
