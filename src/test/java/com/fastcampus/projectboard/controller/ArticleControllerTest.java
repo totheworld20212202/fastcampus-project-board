@@ -45,7 +45,7 @@ class ArticleControllerTest {
                             // import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
                             // 빨간줄은 exception 처리안해서 그럼, 마우스 가져다 대서 처리
     }
-    @Disabled("구현 중")
+//    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 상세 페이지 - 정상 호출")
     @Test
     public void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
