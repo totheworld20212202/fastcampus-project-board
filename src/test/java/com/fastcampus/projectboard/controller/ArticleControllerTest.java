@@ -1,10 +1,12 @@
 package com.fastcampus.projectboard.controller;
 
+import com.fastcampus.projectboard.config.SecurityConfig;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -13,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("View 컨트롤러 - 게시글")
+@Import(SecurityConfig.class)   // 내가 직접 만들었기때문에 import해주어야함.
 @WebMvcTest(ArticleController.class)
 class ArticleControllerTest {
 
@@ -26,6 +29,8 @@ class ArticleControllerTest {
 //        this.mvc = mvc;
 //    }
 //    원래는 @Autowired생략가능한데, test에 있는 것들은 @Autowired 생략 불가 MockMvc앞에 꼭 붙여주어야 함.
+
+
 
     @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 정상 호출")
@@ -45,7 +50,7 @@ class ArticleControllerTest {
                             // import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
                             // 빨간줄은 exception 처리안해서 그럼, 마우스 가져다 대서 처리
     }
-    @Disabled("구현 중")
+//    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 상세 페이지 - 정상 호출")
     @Test
     public void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
