@@ -29,6 +29,9 @@ dependencies {
 	implementation 'org.springframework.data:spring-data-rest-hal-explorer'
 	// thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	// spring security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 	// h2
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'mysql:mysql-connector-java'
