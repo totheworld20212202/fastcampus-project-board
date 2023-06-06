@@ -5,6 +5,8 @@ import com.fastcampus.projectboard.domain.QArticle;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.core.types.dsl.StringExpression;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
@@ -17,6 +19,7 @@ public interface ArticleRepository extends
         QuerydslPredicateExecutor<Article>, // Article안에 모든 field에 관한 기본 검색기능을 추가해줌.
         QuerydslBinderCustomizer<QArticle>
 {
+    Page<Article> findByTitle(String title, Pageable pageable);
     @Override
     default void customize(QuerydslBindings bindings, QArticle root){
         bindings.excludeUnlistedProperties(true); // article의 모든 field 검색이 querydslpredicateExecutor에 의해 열려 있는데, 선택적 field 검색되도록함.
