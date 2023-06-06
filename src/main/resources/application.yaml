@@ -22,6 +22,7 @@ spring:
 #    driver-class-name: org.h2.Driver
 
   jpa:
+    open-in-view: false
     defer-datasource-initialization: true  # make it possible to create database for test
     hibernate.ddl-auto: create # this helps to create tables just referring to the domains
     show-sql: true # showing sql in debugs
