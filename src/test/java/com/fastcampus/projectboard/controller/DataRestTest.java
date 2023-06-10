@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -88,5 +89,18 @@ public class DataRestTest {
         mvc.perform(get("/api/articleComments/1"))   //get하고 ctrl+space한번더 그리고 alt+ enter해서 static import를 하기 안그러면 Mockmvcrequestbuilders.get을 다가져옴.
                 .andExpect(status().isOk()) // 한번더 ctrl+space 해서 MockMvcResultMatchers.status()에서 alt+ enter해서 static import
                 .andExpect(content().contentType(MediaType.valueOf("application/hal+json"))); // localhost:8080/api 에서 application/hal+json으로 세팅되어 있음.
+    }
+    @DisplayName("[api] 회원 관련 API 는 일체 제공하지 않는다.")
+    @Test
+    void givenNothing_whenRequestingUserAccounts_thenThrowsException() throws Exception {
+        // Given
+
+        // When & Then
+        mvc.perform(get("/api/userAccounts")).andExpect(status().isNotFound());
+        mvc.perform(post("/api/userAccounts")).andExpect(status().isNotFound());
+        mvc.perform(put("/api/userAccounts")).andExpect(status().isNotFound());
+        mvc.perform(patch("/api/userAccounts")).andExpect(status().isNotFound());
+        mvc.perform(delete("/api/userAccounts")).andExpect(status().isNotFound());
+        mvc.perform(head("/api/userAccounts")).andExpect(status().isNotFound());
     }
 }

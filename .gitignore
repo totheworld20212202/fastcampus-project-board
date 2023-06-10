@@ -4,7 +4,8 @@
 ### Querydsl
 /src/main/generated
 
-
+### JPA Buddy
+.jpb/
 
 ### Intellij+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
