@@ -3,15 +3,27 @@
     <attr sel="#header" th:replace="header :: header" />
     <attr sel="#footer" th:replace="footer :: footer" />
 
-<!--    <attr sel="tbody" th:remove="all-but-first">-->
-<!--        <attr sel="tr[0]" th:each="article : ${articles}">-->
-<!--            <attr sel="td.title/a" th:text="${article.title}" th:href="@{'/articles'}"/>-->
-<!--            <attr sel="td.hashtag" th:text="${article.hashtag}"/>-->
-<!--            <attr sel="td.user-id" th:text="${article.nickname}"/>-->
-<!--            <attr sel="td.created-by/time" th:datetime="${article.createdAt}" th />-->
-<!--            -->
-<!--        </attr>-->
-<!--    </attr>-->
+<!--
+    1. id = article-table element 고른상태
+        <attr sel="#article-table"></attr>
+    2. 1의 상태(element)에서 tbody라는 element를 골라서 첫째 element만 남기고 나머지 제외한 상태
+        <attr sel="#article-table">
+            <attr sel="tbody" th:remove="all-but-first"></attr>
+        </attr>
+    3. 2의 상태에서 tr[0] element에 반복문 코드를 추가.
+        <attr sel="#article-table">
+            <attr sel="tbody" th:remove="all-but-first">
+                <attr sel="tr[0]" th:each="article : ${articles}">
+                    <attr sel="td.title/a" th:text="${article.title}" th:href="@{'/articles/' + ${article.id}}" />
+                    <attr sel="td.hashtag" th:text="${article.hashtag}"/>
+                    <attr sel="td.user-id" th:text="${article.nickname}" />
+                    <attr sel="td.created-at/time" th:datetime="${article.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd')}" />
+                </attr>
+            </attr>
+        </attr>
+-->
+
+
     <attr sel="#article-table">
         <attr sel="tbody" th:remove="all-but-first">
             <attr sel="tr[0]" th:each="article : ${articles}">
