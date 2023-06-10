@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 //import static org.junit.jupiter.api.Assertions.*;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -62,14 +61,14 @@ class ArticleServiceTest {
         SearchType searchType = SearchType.TITLE;
         String searchKeyword = "title";
         Pageable pageable = Pageable.ofSize(20);
-        given(articleRepository.findByTitle(searchKeyword, pageable)).willReturn(Page.empty());
+        given(articleRepository.findByTitleContaining(searchKeyword, pageable)).willReturn(Page.empty());
 
         // When
         Page<ArticleDto> articles = sut.searchArticles(searchType, searchKeyword, pageable);
 
         // Then
         assertThat(articles).isEmpty();
-        then(articleRepository).should().findByTitle(searchKeyword, pageable);
+        then(articleRepository).should().findByTitleContaining(searchKeyword, pageable);
     }
 
     @DisplayName("게시글을 조회하면, 게시글을 반환한다. ")
@@ -138,11 +137,12 @@ class ArticleServiceTest {
         Article article = createArticle();
         ArticleDto dto = createArticleDto("새 타이틀", "새 내용", "#springboot");
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
+        //
         //willDoNothing(). BDDMockito의 경우 doNothing은 willDoNothing()
         // .given() : ctrl+space 두번하면 BDDMockito.given 이라는 게뜬다. alt +enter 해서 static import. assertj에 있는것이라고함.
         // any의 경우 ArgumentMatchers.any()
         // When
-        sut.saveArticle(dto);
+        sut.updateArticle(dto);
 //        sut.updateArticle(1L, ArticleUpdateDto.of("title","content","#java"));
         // Then
 //        then(articleRepository).should().save(any(Article.class));
