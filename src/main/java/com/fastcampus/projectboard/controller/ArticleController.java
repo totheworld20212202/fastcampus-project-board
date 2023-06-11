@@ -4,7 +4,9 @@ import com.fastcampus.projectboard.domain.type.SearchType;
 import com.fastcampus.projectboard.dto.response.ArticleResponse;
 import com.fastcampus.projectboard.dto.response.ArticleWithCommentsResponse;
 import com.fastcampus.projectboard.service.ArticleService;
+import com.fastcampus.projectboard.service.PaginationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * /articles
@@ -27,6 +31,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ArticleController {
 
     private final ArticleService  articleService;
+    private final PaginationService paginationService;
+
+    // pageable에 기본 page=0으로 되어있고, controller에 page번호를 주면 알아서 pageable안으로 들어가도록 세팅되어 있다.
     @GetMapping
     public String articles(
             @RequestParam(required = false) SearchType searchType,
@@ -34,7 +41,11 @@ public class ArticleController {
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             ModelMap map){
 //        map.addAttribute("articles", List.of());
-        map.addAttribute("articles", articleService.searchArticles(searchType,searchValue,pageable).map(ArticleResponse::from));
+        Page<ArticleResponse> articles = articleService.searchArticles(searchType,searchValue,pageable).map(ArticleResponse::from);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
+        map.addAttribute("articles", articles); // 여기서, articles에는 특정페이지의 10개데이터가 들어있음. 모두가 아님
+        map.addAttribute("paginationBarNumbers", barNumbers);
+
         return "articles/index";
         // @RequestParam을 통해서 getparameter를 불러오고, required=false라는
         // 것은 반드시 있지 않아도 된다. 없다면 전체를 조회할것
