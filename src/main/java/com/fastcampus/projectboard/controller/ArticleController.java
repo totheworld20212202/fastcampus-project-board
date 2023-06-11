@@ -33,6 +33,7 @@ public class ArticleController {
     private final ArticleService  articleService;
     private final PaginationService paginationService;
 
+    // pageable에 기본 page=0으로 되어있고, controller에 page번호를 주면 알아서 pageable안으로 들어가도록 세팅되어 있다.
     @GetMapping
     public String articles(
             @RequestParam(required = false) SearchType searchType,
@@ -42,7 +43,7 @@ public class ArticleController {
 //        map.addAttribute("articles", List.of());
         Page<ArticleResponse> articles = articleService.searchArticles(searchType,searchValue,pageable).map(ArticleResponse::from);
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
-        map.addAttribute("articles", articles);
+        map.addAttribute("articles", articles); // 여기서, articles에는 특정페이지의 10개데이터가 들어있음. 모두가 아님
         map.addAttribute("paginationBarNumbers", barNumbers);
 
         return "articles/index";
