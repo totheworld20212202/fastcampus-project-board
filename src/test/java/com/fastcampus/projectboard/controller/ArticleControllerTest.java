@@ -1,6 +1,7 @@
 package com.fastcampus.projectboard.controller;
 
 import com.fastcampus.projectboard.config.SecurityConfig;
+import com.fastcampus.projectboard.domain.type.SearchType;
 import com.fastcampus.projectboard.dto.ArticleWithCommentsDto;
 import com.fastcampus.projectboard.dto.UserAccountDto;
 import com.fastcampus.projectboard.service.ArticleService;
@@ -74,7 +75,8 @@ class ArticleControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))       // content는 한번 추천  contentTypeCompatibleWith은 호환되는것까지 허용
                 .andExpect(view().name("articles/index"))   // view는 한번 추천
                 .andExpect(model().attributeExists("articles"))     // model 한번추천, data가 articles에 의해 내려줄텐데 데이터가 있는지 체크, 데이타로 articles라는걸 넘겨주어야 한다.
-                .andExpect(model().attributeExists("paginationBarNumbers"));     // model 한번추천, data가 articles에 의해 내려줄텐데 데이터가 있는지 체크, 데이타로 articles라는걸 넘겨주어야 한다.
+                .andExpect(model().attributeExists("paginationBarNumbers"))     // model 한번추천, data가 articles에 의해 내려줄텐데 데이터가 있는지 체크, 데이타로 articles라는걸 넘겨주어야 한다.
+                .andExpect(model().attributeExists("searchTypes"));     // model 한번추천, data가 articles에 의해 내려줄텐데 데이터가 있는지 체크, 데이타로 articles라는걸 넘겨주어야 한다.
 //                .andExpect(model().attributeExists("searchTypes"));
         then(articleService).should().searchArticles(eq(null),eq(null),any(Pageable.class));
         then(paginationService).should().getPaginationBarNumbers(anyInt(),anyInt());
@@ -82,6 +84,40 @@ class ArticleControllerTest {
                             //추천 두번 받아라. ctrl+enter 두번, 그리고 static import 위해서 alt + enter
                             // import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
                             // 빨간줄은 exception 처리안해서 그럼, 마우스 가져다 대서 처리
+    }
+
+    @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 검색어와 함께 호출")
+    @Test
+    public void givenSearchKeyword_whenSearchingArticlesView_thenReturnsArticlesView() throws Exception {
+        // Given
+        SearchType searchType = SearchType.TITLE;
+        String searchValue = "title";
+        given(articleService.searchArticles(eq(searchType),eq(searchValue),any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(),anyInt())).willReturn(List.of(0,1,2,3,4));
+        // Given부분은 mockbean 세팅하는것 : articleService.searchArticles에 eq(null),eq(null),any(Pageable.class))이 들어오면, 빈 페이지를 준다.
+        // any : argumentMathers 두번 ctlr+enter로 제안받아서 alt +enter static import
+        // argumentmatcher는 field중 일부만 사용못함. 그래서, eq()를 사용하는것임
+        // given 두번 제안받아서 static import bdd mockito
+
+        // when & then
+        mvc.perform(get("/articles")
+                        .queryParam("searchType",searchType.name())
+                        .queryParam("searchValue",searchValue)
+                )
+
+                .andExpect(status().isOk())                                  // status는 두번 추천
+//                .andExpect(content().contentType(MediaType.TEXT_HTML))       // content는 한번 추천  contentType은 exact match를 본다.
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))       // content는 한번 추천  contentTypeCompatibleWith은 호환되는것까지 허용
+                .andExpect(view().name("articles/index"))   // view는 한번 추천
+                .andExpect(model().attributeExists("articles"))     // model 한번추천, data가 articles에 의해 내려줄텐데 데이터가 있는지 체크, 데이타로 articles라는걸 넘겨주어야 한다.
+                .andExpect(model().attributeExists("searchTypes"));     // model 한번추천, data가 articles에 의해 내려줄텐데 데이터가 있는지 체크, 데이타로 articles라는걸 넘겨주어야 한다.
+//                .andExpect(model().attributeExists("searchTypes"));
+        then(articleService).should().searchArticles(eq(searchType),eq(searchValue),any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(),anyInt());
+        // then은 한번 추천받아라 그리고 그냥 enter
+        //추천 두번 받아라. ctrl+enter 두번, 그리고 static import 위해서 alt + enter
+        // import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+        // 빨간줄은 exception 처리안해서 그럼, 마우스 가져다 대서 처리
     }
 
     @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 페이징, 정렬 기능")

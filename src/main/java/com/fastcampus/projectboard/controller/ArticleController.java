@@ -45,6 +45,7 @@ public class ArticleController {
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
         map.addAttribute("articles", articles); // 여기서, articles에는 특정페이지의 10개데이터가 들어있음. 모두가 아님
         map.addAttribute("paginationBarNumbers", barNumbers);
+        map.addAttribute("searchTypes", SearchType.values());   // enum에 .values()가 있다. array의 형태로 넘겨줌
 
         return "articles/index";
         // @RequestParam을 통해서 getparameter를 불러오고, required=false라는
