@@ -25,15 +25,32 @@
                 </attr>
         -->
 
+        <attr sel="#search-type" th:remove="all-but-first">
+            <attr sel="option[0]"
+                  th:each="searchType : ${searchTypes}"
+                  th:value="${searchType.name}"
+                  th:text="${searchType.description}"
+                  th:selected="${param.searchType != null && (param.searchType.toString == searchType.name)}"/>
 
+        </attr>
+<!--
+                  param.searchType은 enum을 확정할수 없어서 name을 꺼낼수없음. searchType.name에서 searchType은 enum이어서 name을 꺼낼수있음.
+                  여기서 param.searchType은 getParameter에서 가져온 searchType
+-->
+        <attr sel="#search-value" th:value="${param.searchValue}" />
+<!--        직전까지 검색한 결과를 param.searchValue로 유지 -->
         <attr sel="#article-table">
             <!--
                 실제로 pageable이 영향을 끼치는 것은 repository layer이다. 거기서 Page<article>을 반환하므로 article domain내의 field를 참조해야한다.
             -->
             <attr sel="thead/tr">
-                <attr sel="th.title/a" th:text="'제목'" th:href="@{/articles(
+                <attr sel="th.title/a"
+                      th:text="'제목'"
+                      th:href="@{/articles(
             page=${articles.number},
-            sort='title' + (*{sort.getOrderFor('title')} != null ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : '') : '')
+            sort='title' + (*{sort.getOrderFor('title')} != null ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : '') : ''),
+            searchType=${param.searchType},
+            searchValue=${param.searchValue}
         )}"/>
 <!--
 http://localhost:8080/articles?page=7&sort=title,desc <- asc일경우 또는 어쨋든 마구잡이일경우, desc가 아니기때문에, ,desc가 추가되어 정렬을 바꾸어준다.
@@ -44,15 +61,21 @@ http://localhost:8080/articles?page=7&sort=title  <- 이 경우, 기본 default 
 -->
                 <attr sel="th.hashtag/a" th:text="'해시태그'" th:href="@{/articles(
             page=${articles.number},
-            sort='hashtags' + (*{sort.getOrderFor('hashtags')} != null ? (*{sort.getOrderFor('hashtags').direction.name} != 'DESC' ? ',desc' : '') : '')
+            sort='hashtag' + (*{sort.getOrderFor('hashtag')} != null ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : '') : ''),
+            searchType=${param.searchType},
+            searchValue=${param.searchValue}
         )}"/>
                 <attr sel="th.user-id/a" th:text="'작성자'" th:href="@{/articles(
             page=${articles.number},
-            sort='userAccount.userId' + (*{sort.getOrderFor('userAccount.userId')} != null ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : '') : '')
+            sort='userAccount.userId' + (*{sort.getOrderFor('userAccount.userId')} != null ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : '') : ''),
+            searchType=${param.searchType},
+            searchValue=${param.searchValue}
         )}"/>
                 <attr sel="th.created-at/a" th:text="'작성일'" th:href="@{/articles(
             page=${articles.number},
-            sort='createdAt' + (*{sort.getOrderFor('createdAt')} != null ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : '') : '')
+            sort='createdAt' + (*{sort.getOrderFor('createdAt')} != null ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : '') : ''),
+            searchType=${param.searchType},
+            searchValue=${param.searchValue}
         )}"/>
             </attr>
 
@@ -71,19 +94,19 @@ http://localhost:8080/articles?page=7&sort=title  <- 이 경우, 기본 default 
         <attr sel="#pagination">
             <attr sel="li[0]/a"
                   th:text="'previous'"
-                  th:href="@{/articles(page=${articles.number - 1})}"
+                  th:href="@{/articles(page=${articles.number - 1},searchType=${param.searchType},searchValue=${param.searchValue})}"
                   th:class="'page-link' + (${articles.number} <= 0 ? ' disabled' : '')"
             />
             <attr sel="li[1]" th:class="page-item" th:each="pageNumber : ${paginationBarNumbers}">
                 <attr sel="a"
                       th:text="${pageNumber + 1}"
-                      th:href="@{/articles(page=${pageNumber})}"
+                      th:href="@{/articles(page=${pageNumber},searchType=${param.searchType},searchValue=${param.searchValue})}"
                       th:class="'page-link' + (${pageNumber} == ${articles.number} ? ' disabled' : '')"
                 />
             </attr>
             <attr sel="li[2]/a"
                   th:text="'next'"
-                  th:href="@{/articles(page=${articles.number + 1})}"
+                  th:href="@{/articles(page=${articles.number + 1},searchType=${param.searchType},searchValue=${param.searchValue})}"
                   th:class="'page-link' + (${articles.number} >= ${articles.totalPages - 1} ? ' disabled' : '')"
             />
         </attr>
