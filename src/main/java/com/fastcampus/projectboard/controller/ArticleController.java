@@ -60,4 +60,21 @@ public class ArticleController {
         map.addAttribute("articleComments", article.articleCommentsResponse());
         return "articles/detail";
     }
+
+    @GetMapping("/search-hashtag")
+    public String searchHashtag(
+            @RequestParam(required = false) String searchValue,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            ModelMap map
+    ){
+        Page<ArticleResponse> articles = articleService.searchArticlesViaHashtag(searchValue,pageable).map(ArticleResponse::from);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
+        List<String> hashtags = articleService.getHashtags();
+        map.addAttribute("articles", articles); // 여기서, articles에는 특정페이지의 10개데이터가 들어있음. 모두가 아님
+        map.addAttribute("hashtags", hashtags); // 여기서, articles에는 특정페이지의 10개데이터가 들어있음. 모두가 아님
+        map.addAttribute("paginationBarNumbers", barNumbers);
+        map.addAttribute("searchType", SearchType.HASHTAG);   // enum에 .values()가 있다. array의 형태로 넘겨줌
+
+        return "articles/search-hashtag";
+    }
 }
