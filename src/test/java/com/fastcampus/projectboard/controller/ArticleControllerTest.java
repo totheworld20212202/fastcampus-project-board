@@ -181,22 +181,65 @@ class ArticleControllerTest {
         mvc.perform(get("/articles/search"))
                 .andExpect(status().isOk())                                  // status는 두번 추천
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))       // content는 한번 추천
-                .andExpect(model().attributeExists("articles/search"));
+                .andExpect(view().name("articles/search"));
         //추천 두번 받아라. ctrl+enter 두번, 그리고 static import 위해서 alt + enter
         // import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
         // 빨간줄은 exception 처리안해서 그럼, 마우스 가져다 대서 처리
     }
-    @Disabled("구현 중")
+
+//    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 해시태그 검색 페이지 - 정상 호출")
     @Test
-    public void givenNothing_whenRequestingArticleHashtagSearchView_thenReturnsArticleHashtagSearchView() throws Exception {
+    public void givenNothing_whenRequestingArticleHashtagView_thenReturnsArticleHashtagView() throws Exception {
         // Given
-
+        List<String> hashtags = List.of("#java","#spring","#boot");
+        given(articleService.searchArticlesViaHashtag(eq(null),any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(),anyInt())).willReturn(List.of(1,2,3,4,5));
+        given(articleService.getHashtags()).willReturn(hashtags);
         // when & then
         mvc.perform(get("/articles/search-hashtag"))
                 .andExpect(status().isOk())                                  // status는 두번 추천
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))       // content는 한번 추천
-                .andExpect(model().attributeExists("articles/search-hashtag"));
+                .andExpect(view().name("articles/search-hashtag"))
+                .andExpect(model().attribute("articles",Page.empty()))
+                .andExpect(model().attribute("hashtags",hashtags))
+                .andExpect(model().attributeExists("paginationBarNumbers"))
+                .andExpect(model().attribute("searchType", SearchType.HASHTAG));
+        then(articleService).should().searchArticlesViaHashtag(eq(null),any(Pageable.class));
+        then(articleService).should().getHashtags();
+        then(paginationService).should().getPaginationBarNumbers(anyInt(),anyInt());
+
+        //추천 두번 받아라. ctrl+enter 두번, 그리고 static import 위해서 alt + enter
+        // import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+        // 빨간줄은 exception 처리안해서 그럼, 마우스 가져다 대서 처리
+    }
+
+//    @Disabled("구현 중")
+    @DisplayName("[view][GET] 게시글 해시태그 검색 페이지 - 정상 호출, 해시태그 입력")
+    @Test
+    public void givenHashtag_whenRequestingArticleHashtagView_thenReturnsArticleHashtagView() throws Exception {
+        // Given
+        String hashtag = "#java";
+        List<String> hashtags = List.of("#java","#spring","#boot");
+        given(articleService.searchArticlesViaHashtag(eq(hashtag),any(Pageable.class))).willReturn(Page.empty());
+        given(articleService.getHashtags()).willReturn(hashtags);
+        given(paginationService.getPaginationBarNumbers(anyInt(),anyInt())).willReturn(List.of(1,2,3,4,5));
+        // when & then
+        mvc.perform(
+                get("/articles/search-hashtag")
+                        .queryParam("searchValue", hashtag)
+
+        )
+                .andExpect(status().isOk())                                  // status는 두번 추천
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))       // content는 한번 추천
+                .andExpect(view().name("articles/search-hashtag"))
+                .andExpect(model().attribute("articles",Page.empty()))
+                .andExpect(model().attribute("hashtags",hashtags))
+                .andExpect(model().attributeExists("paginationBarNumbers"))
+                .andExpect(model().attribute("searchType", SearchType.HASHTAG));
+        then(articleService).should().searchArticlesViaHashtag(eq(hashtag),any(Pageable.class));
+        then(articleService).should().getHashtags();
+        then(paginationService).should().getPaginationBarNumbers(anyInt(),anyInt());
         //추천 두번 받아라. ctrl+enter 두번, 그리고 static import 위해서 alt + enter
         // import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
         // 빨간줄은 exception 처리안해서 그럼, 마우스 가져다 대서 처리
