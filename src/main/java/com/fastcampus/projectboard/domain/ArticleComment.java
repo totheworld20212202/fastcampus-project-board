@@ -23,7 +23,9 @@ public class ArticleComment extends AuditingFields{
     @Setter
     @ManyToOne(optional = false)          // optional = false : 필수값, cascade값은 기본값이 none.
     private Article article;
-    @Setter @ManyToOne(optional = false) private UserAccount userAccount; // 유저 정보 (ID)
+//    @Setter @ManyToOne(optional = false) private UserAccount userAccount; // 유저 정보 (ID)
+
+    @Setter @ManyToOne(optional = false) @JoinColumn(name = "userId") private UserAccount userAccount; // 유저 정보 (ID)
     @Setter
     @Column(nullable = false, length = 500)
     private String content;
