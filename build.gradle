@@ -32,6 +32,7 @@ dependencies {
 	// spring security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	testImplementation 'org.springframework.security:spring-security-test'
 	// h2
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'mysql:mysql-connector-java'
