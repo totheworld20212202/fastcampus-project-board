@@ -65,24 +65,28 @@ public class ArticleService {
     public void updateArticle(Long articleId, ArticleDto dto) {
         try{
             Article article = articleRepository.getReferenceById(articleId);
-            if(dto.title() != null){
-                article.setTitle(dto.title());  // dto는 현재 record로 만들어져있는데, getter, setter를 이미 가지고 있음.
+            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
+
+            if(article.getUserAccount().equals(userAccount)){
+                if(dto.title() != null){
+                    article.setTitle(dto.title());  // dto는 현재 record로 만들어져있는데, getter, setter를 이미 가지고 있음.
+                }
+                if(dto.content() != null){
+                    article.setContent(dto.content());
+                }
+                article.setHashtag(dto.hashtag());
+//                articleRepository.save(article);
             }
-            if(dto.content() != null){
-                article.setContent(dto.content());
-            }
-            article.setHashtag(dto.hashtag());
-            articleRepository.save(article);
             // Transactional로 묶여있고, 영속성 context 끝날때, 감지해서 알아서 save함.
 
         } catch (EntityNotFoundException e){
-            log.warn("게시글 업데이트 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
+            log.warn("게시글 업데이트 실패. 게시글을 수정하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
         }// string interpolation : dto: {}", dto. 원래는 " dto: " + dto이런형식
             // warning안찍을때 메모리 잡는 부담을 줄일수 있다고 함.
     }
 
-    public void deleteArticle(long articleId) {
-        articleRepository.deleteById(articleId);
+    public void deleteArticle(long articleId, String userId) {
+        articleRepository.deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
     public long getArticleCount() {

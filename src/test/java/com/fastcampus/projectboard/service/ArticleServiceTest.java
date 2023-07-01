@@ -207,6 +207,7 @@ class ArticleServiceTest {
         Article article = createArticle();
         ArticleDto dto = createArticleDto("새 타이틀", "새 내용", "#springboot");
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
+        given(userAccountRepository.getReferenceById(dto.userAccountDto().userId())).willReturn(dto.userAccountDto().toEntity());
         //
         //willDoNothing(). BDDMockito의 경우 doNothing은 willDoNothing()
         // .given() : ctrl+space 두번하면 BDDMockito.given 이라는 게뜬다. alt +enter 해서 static import. assertj에 있는것이라고함.
@@ -222,6 +223,7 @@ class ArticleServiceTest {
                 .hasFieldOrPropertyWithValue("content", dto.content())
                 .hasFieldOrPropertyWithValue("hashtag", dto.hashtag());
         then(articleRepository).should().getReferenceById(dto.id());
+        then(userAccountRepository).should().getReferenceById(dto.userAccountDto().userId());
 
     }
     @DisplayName("없는 게시글의 수정 정보를 입력하면, 경고 로그를 찍고 아무 것도 하지 않는다.")
@@ -242,14 +244,15 @@ class ArticleServiceTest {
         // Given
 //        willDoNothing().given(articleRepository).delete(any(Article.class)); // 그래서, .willReturn을 달아두었음.
         Long articleId = 1L;
-        willDoNothing().given(articleRepository).deleteById(articleId);
+        String userId = "uno";
+        willDoNothing().given(articleRepository).deleteByIdAndUserAccount_UserId(articleId,userId);
         // When
 //        sut.saveArticle(dto);
-        sut.deleteArticle(1L);
+        sut.deleteArticle(1L,userId);
         // Then
 //        then(articleRepository).should().delete(any(Article.class));
         // then() : BDDMockito.then()
-        then(articleRepository).should().deleteById(articleId);
+        then(articleRepository).should().deleteByIdAndUserAccount_UserId(articleId,userId);
     }
     @DisplayName("게시글 수를 조회하면, 게시글 수를 반환한다")
     @Test

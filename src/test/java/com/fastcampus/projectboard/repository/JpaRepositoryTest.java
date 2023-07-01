@@ -8,16 +8,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 @ActiveProfiles("testdb")
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayName("JPA 연결 테스트")
-@Import(JpaConfig.class)    // JpaConfig는 내가 직접 만들어서 인식할수 없어서 직접 참조할수있도록 세팅
+@Import(JpaRepositoryTest.TestJpaConfig.class)    // JpaConfig는 내가 직접 만들어서 인식할수 없어서 직접 참조할수있도록 세팅
 @DataJpaTest    // slice test
 class JpaRepositoryTest {
 
@@ -96,5 +101,14 @@ class JpaRepositoryTest {
             // Then
             assertThat(articleRepository.count()).isEqualTo(previousArticleCount - 1);
             assertThat(articleCommentRepository.count()).isEqualTo(previousArticleComment - deletedCommentSize);
+        }
+
+        @EnableJpaAuditing
+        @TestConfiguration // test 할때만 bean으로 등록.
+        public static class TestJpaConfig{
+            @Bean
+            public AuditorAware<String> auditorAware(){
+                return () -> Optional.of("uno");    // insert에서 createdBy가 들어가야해서 사용자가 있어야 하는데, security를 이용하여 등록해서 인증인이 없으면 null이다. 따라서, test할때만 들어갈수있게해주어야함.
+            }                                             // TestSecuritConfig.java에서는 일단 인증 @을 한뒤에 사용자 데이터 불러올때의 값을 준것.
         }
 }
